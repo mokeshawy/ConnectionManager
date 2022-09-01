@@ -5,15 +5,19 @@ import android.content.Context.WIFI_SERVICE
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkCapabilities.*
 import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatActivity.TELEPHONY_SERVICE
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+
+const val SIGNAL_STRENGTH_LIMITED_NUMBER = 5
 
 class NetworkManager(
     private val activity: AppCompatActivity,
@@ -25,14 +29,15 @@ class NetworkManager(
     private val telephonyManager
         get() =
             activity.getSystemService(TELEPHONY_SERVICE) as TelephonyManager
-    private val wifiManager get() = activity.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+    private val wifiManager
+        get() =
+            activity.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
     init {
         activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
                 registerPhoneStateListener()
-                getSimOperatorName()
             }
 
             override fun onResume(owner: LifecycleOwner) {
@@ -54,8 +59,9 @@ class NetworkManager(
 
     private fun getNetworkRequest(): NetworkRequest {
         return NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(TRANSPORT_WIFI)
+            .addTransportType(TRANSPORT_CELLULAR)
+            .addTransportType(TRANSPORT_ETHERNET)
             .build()
     }
 
@@ -84,42 +90,70 @@ class NetworkManager(
 
     private fun checkConnectInternetType() {
         when {
-            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true -> {
-                showToast("Cellular is on")
-                getSignalStrengthFromApi29ToUp()
+            networkCapabilities?.hasTransport(TRANSPORT_CELLULAR) == true -> {
+                getGsmSignalStrengthGreaterThanApi28()
+                getSimOperatorName()
+                Log.e("Cellular is on","On")
+                //here log cellular turn on
             }
-            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true ->{
+            networkCapabilities?.hasTransport(TRANSPORT_WIFI) == true -> {
                 showToast("Wifi is on")
+                getWifiSignalStrengthFromApi30OrGreaterThanApi30()
+                getWifiSignalStrengthLessThanApi30()
+                // here log wifi turn on
             }
-            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true ->
+            networkCapabilities?.hasTransport(TRANSPORT_ETHERNET) == true ->
                 showToast("Ethernet on")
+            //here log ether net turn on
         }
     }
 
     private fun checkDisconnectInternetType() {
         when {
-            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true -> {
+            networkCapabilities?.hasTransport(TRANSPORT_CELLULAR) == true ->
                 showToast("Cellular is off")
-            }
-            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true ->
+            //here log cellular turn off
+            networkCapabilities?.hasTransport(TRANSPORT_WIFI) == true ->
                 showToast("Wifi off")
-            networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true ->
+            // here log wifi turn off
+            networkCapabilities?.hasTransport(TRANSPORT_ETHERNET) == true ->
                 showToast("Ethernet off")
+            //here log ether net turn off
         }
     }
 
 
-    private fun getSignalStrengthFromApi29ToUp() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            showToast("${telephonyManager.signalStrength?.level}")
-        }
+    private fun getGsmSignalStrengthGreaterThanApi28() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
+            showToast("signal strength greater than Api 28: ${telephonyManager.signalStrength?.level}")
+        //log signal strength greater than Api 28
     }
 
     private fun getSimOperatorName() {
         showToast("Network Name: ${telephonyManager.simOperatorName}")
+        //here log sim operator name
     }
 
     private fun showToast(message: String) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+    }
+
+
+    private fun getWifiSignalStrengthFromApi30OrGreaterThanApi30() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            val level = wifiManager.calculateSignalLevel(SIGNAL_STRENGTH_LIMITED_NUMBER)
+            showToast("Wifi signal equal or greater than Api 30: $level")
+            //here log Wifi signal equal or greater than Api 30
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun getWifiSignalStrengthLessThanApi30() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            val rssi = wifiManager.connectionInfo.rssi
+            val level = WifiManager.calculateSignalLevel(rssi, SIGNAL_STRENGTH_LIMITED_NUMBER)
+            showToast("Wifi signal less than Api 30: $level")
+            //here Wifi signal less than Api 30
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.testconnection
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.SignalStrength
@@ -35,24 +36,26 @@ class PhoneStateListener {
             super.onSignalStrengthsChanged(signalStrength)
             if (signalStrength.isGsm) {
                 signalStrength.apply {
-                    getSignalStrengthFromApi21ToApi23()
-                    getSignalStrengthFromApi23ToApi27()
+                    getSignalStrengthFromApi21ToApi22()
+                    getSignalStrengthFromApi23ToApi28()
                 }
             }
         }
     }
 
-    private fun SignalStrength.getSignalStrengthFromApi21ToApi23() {
+    @SuppressLint("LongLogTag")
+    private fun SignalStrength.getSignalStrengthFromApi21ToApi22() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            Log.e("Signal Strength", "$gsmSignalStrength")
-            // handle result
+            Log.e("Signal Strength from Api 21 to Api 22", "$gsmSignalStrength")
+            // here log Signal Strength from Api 21 to Api 22
         }
     }
 
-    private fun SignalStrength.getSignalStrengthFromApi23ToApi27() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            Log.e("Signal Strength", "$level")
-            // handle result
+    @SuppressLint("LongLogTag")
+    private fun SignalStrength.getSignalStrengthFromApi23ToApi28() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            Log.e("Signal Strength from Api 23 to Api 28", "$level")
+            // here Signal Strength from Api 23 to Api 28
         }
     }
 }
