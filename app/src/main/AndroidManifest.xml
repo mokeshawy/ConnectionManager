@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.testconnection">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
         tools:ignore="CoarseFineLocation" />
 
     <application
+        android:name=".app_application.Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -19,7 +22,7 @@
         android:theme="@style/Theme.TestConnection"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".feature.nainactivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -11,18 +11,16 @@ X
 (gradle/wrapper/gradle-wrapper.properties,f/b/fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
 >
 app/.gitignore,5/1/51e1c5d383dfaa35e0e7e5873a0a99355a86880f
-@
-app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
 F
 app/proguard-rules.pro,9/e/9e08934d811afe28fbc77aaa3c0d747b94348db9
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-<
-build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
 ~
 Napp/src/androidTest/java/com/example/testconnection/ExampleInstrumentedTest.kt,b/7/b73231d8e38aca49dbca326eabc4e09df75e0edc
 o
 ?app/src/test/java/com/example/testconnection/ExampleUnitTest.kt,b/9/b98b4dc6b3e37752c41bcea1ea4277a04253c56d
-l
-<app/src/main/java/com/example/testconnection/MainActivity.kt,7/0/703f464a56dde31a54c5ee91a47cea6ffcb04cb1
+•
+eapp/src/main/java/com/example/testconnection/core/network_manager/conectivity/ConnectivityObserver.kt,2/0/20f3d56aa0fd147a9545c64f08145e5b50c39dd7
+œ
+lapp/src/main/java/com/example/testconnection/core/network_manager/conectivity/NetworkConnectivityObserver.kt,b/5/b56ddb489913655bf65bee1821f4fbfeafa0587b

@@ -1,6 +1,7 @@
-package com.example.testconnection
+package com.example.testconnection.core.network_manager
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.SignalStrength
@@ -14,10 +15,10 @@ import androidx.lifecycle.LifecycleOwner
 class PhoneStateListener {
 
     fun registerPhoneStateListener(
-        activity: AppCompatActivity,
+        activity: Activity,
         telephonyManager: TelephonyManager,
     ) {
-        activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
+        (activity as AppCompatActivity).lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
                 super.onResume(owner)
                 telephonyManager.listen(phoneStateListener,
